@@ -135,9 +135,4 @@ dmypy.json
 .pyre/
 
 /media
-cliente/migrations/
-financeiro/migrations/
-processo/migrations/
-core/migrations/
-
 .data/
