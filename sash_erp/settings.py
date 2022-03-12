@@ -46,7 +46,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
+    'crispy_forms',
+    'crispy_bootstrap5',
     'core',
+    'rh',
 ]
 
 MIDDLEWARE = [
@@ -79,6 +83,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'sash_erp.wsgi.application'
 
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases

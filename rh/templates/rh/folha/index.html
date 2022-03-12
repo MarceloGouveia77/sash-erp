@@ -1,0 +1,172 @@
+{% extends 'core/base.html' %}
+{% load humanize %}
+
+{% block title %} Folha de Pagamentos {% endblock title %}
+{% block pagina_anterior %}RH{% endblock pagina_anterior %}
+{% block pagina_atual %}Folha de Pagamento{% endblock pagina_atual %}
+{% block pagina %}Folha de Pagamento{% endblock pagina %}
+
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <form method="post">{% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-4 mt-4 mt-md-0 col-lg-3">
+                            <div class="input-group">
+                                <div class="input-group-text">
+                                    <span class="fa fa-clock-o tx-16 lh-0 op-6"></span>
+                                </div>
+                                <input 
+                                    class="form-control" 
+                                    required 
+                                    name="mes" 
+                                    id="datepicker-month" 
+                                    placeholder="Mês" 
+                                    type="text" 
+                                    {% if mes %} value="{{ mes }}"{% endif %}
+                                >
+                            </div>
+                        </div>
+                        <div class="col-md-4 mt-4 mt-md-0 col-lg-3">
+                            <div class="input-group">
+                                <div class="input-group-text">
+                                    <span class="fa fa-clock-o tx-16 lh-0 op-6"></span>
+                                </div>
+                                <input 
+                                    class="form-control" 
+                                    required name="ano" 
+                                    id="datepicker-year" 
+                                    placeholder="Ano" 
+                                    type="text"
+                                    {% if ano %} value="{{ ano }}"{% endif %}
+                                    >
+                            </div>
+                        </div>
+                        <div class="col-md-4 mt-1">
+                            <button class="btn btn-sm btn-primary" type="submit"><i class="fa fa-download"></i> Carregar</button>
+                        </div>
+                        <div class="col-lg-2 text-end">
+                            {% if folhas %}
+                            <button class="btn btn-sm btn-success btn-fechar-folha" type="submit"><i class="fa fa-check"></i> Fechar Folha</button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    
+    {% for folha in folhas %}
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-lg-4" style="border-right: 1px solid #e9edf4;">
+                        <h5 class="fw-bold">{{ folha.funcionario }}</h5>
+                        <table class="table table-sm table-bordered">
+                            <tr>
+                                <td class="fw-bold">Salário Base</td>
+                                <td class="text-success">R$ {{ folha.salario_base|floatformat:2|intcomma }}</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold">Horas Extra</td>
+                                <td class="text-success">R$ {{ folha.horas_extra|floatformat:2|intcomma }}</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold">Faltas</td>
+                                <td class="text-danger">R$ {{ folha.faltas|floatformat:2|intcomma }}</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold">Outros Descontos</td>
+                                <td class="text-danger">R$ {{ folha.descontos|floatformat:2|intcomma }}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-center" colspan="2"><span class="fw-bold">Total</span> R$ {{ folha.total|floatformat:2|intcomma }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-lg-8" style="align-self: center !important;">
+                        <div class="row" style="border-bottom: 1px solid #e9edf4;">
+                            <div class="col-12">
+                                <p><span class="fw-bold">Dias Trabalhados:</span> 22</p>
+                            </div>
+                        </div>
+                        <div class="row" style="border-bottom: 1px solid #e9edf4;">
+                            <div class="col-12" style="align-self: center !important;">
+                                <p><span class="fw-bold">Faltas:</span>
+                                    {{ folha.calcular_faltas.qtd }} - 
+                                    {% for falta in folha.calcular_faltas.faltas %}
+                                        <span class="badge rounded-pill bg-default badge-sm me-1 mb-1 mt-1" data-bs-toggle="tooltip" data-bs-title="{{ falta.motivo }}">{{ falta.obter_data }}</span>
+                                    {% endfor %}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="row" style="border-bottom: 1px solid #e9edf4; align-self: center;">
+                            <div class="col-12" style="place-self: center !important;">
+                                <p><span class="fw-bold">Horas Extras:</span> 
+
+                                     - 
+                                    {% for hora in folha.calcular_horas_extras.horas %}
+                                        <span class="badge rounded-pill bg-default badge-sm me-1 mb-1 mt-1" data-bs-toggle="tooltip" data-bs-title="{{ hora.obter_data }}">{{ hora.obter_tempo_total }}</span> 
+                                    {% endfor %}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="row" style="border-bottom: 1px solid #e9edf4;">
+                            <div class="col-12">
+                                <p><span class="fw-bold">Descontos:</span> R$ {{ folha.descontos }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock content %}
+    
+
+{% block scripts %}
+<script>
+    $('#datepicker-month').bootstrapdatepicker({
+        monthsShort: ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"],
+        language: 'pt-BR',
+        format: "m",
+        viewMode: "months",
+        minViewMode: "months",
+        multidate: false,
+        multidateSeparator: "-",
+    })
+    $('#datepicker-year').bootstrapdatepicker({
+        format: "yyyy",
+        viewMode: "year",
+        minViewMode: "years",
+        multidate: false,
+        multidateSeparator: "-",
+    })
+
+    $(".btn-fechar-folha").click(function(event){
+        event.preventDefault();
+        const data = {
+            'mes': $("input[name='mes']").val(),
+            'ano': $("input[name='ano']").val()
+        }
+        const endpoint = '/rh/funcionarios/folha/fechar/';
+        
+        const fechar = confirm("Confirmar fechamento de folha?");
+        if (fechar){
+            $.post(endpoint, data, function(resp){
+                window.location.reload();
+            })
+        }
+    })
+</script>
+{% endblock scripts %}
+    

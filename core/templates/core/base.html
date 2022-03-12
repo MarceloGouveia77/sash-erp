@@ -50,7 +50,7 @@
             <div class="app-header header sticky">
                 <div class="container-fluid main-container">
                     <div class="d-flex">
-                        <a aria-label="Hide Sidebar" class="app-sidebar__toggle" data-bs-toggle="sidebar" href="javascript:void(0)"></a>
+                        <a aria-label="Hide Sidebar" id="sidebar-toggle" class="app-sidebar__toggle" data-bs-toggle="sidebar" href="javascript:void(0)"></a>
                         <!-- sidebar-toggle-->
                         <a class="logo-horizontal " href="index.html">
                             <img src="{% static 'assets/images/brand/logo.png' %}" class="header-brand-img desktop-logo" alt="logo">
@@ -146,7 +146,7 @@
                     <div class="main-container container-fluid">
 
                         <!-- PAGE-HEADER -->
-                        <div class="page-header">
+                        <div class="page-header mb-1">
                             <h1 class="page-title">{% block pagina %} {% endblock pagina %}</h1>
                             <div>
                                 <ol class="breadcrumb">
@@ -205,10 +205,21 @@
     <!-- SIDEBAR JS -->
     <script src="{% static 'assets/plugins/sidebar/sidebar.js' %}"></script>
 
+    <!-- DATA TABLE JS-->
+    <script src="{% static 'assets/plugins/datatable/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'assets/plugins/datatable/js/dataTables.bootstrap5.js' %}"></script>
+    <script src="{% static 'assets/plugins/datatable/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'assets/plugins/datatable/responsive.bootstrap5.min.js' %}"></script>
+    <script src="{% static 'assets/js/init_datatable.js' %}"></script>
+
     <!-- Perfect SCROLLBAR JS-->
     <script src="{% static 'assets/plugins/p-scroll/perfect-scrollbar.js' %}"></script>
     <script src="{% static 'assets/plugins/p-scroll/pscroll.js' %}"></script>
     <script src="{% static 'assets/plugins/p-scroll/pscroll-1.js' %}"></script>
+
+    <script src="{% static 'assets/plugins/date-picker/date-picker.js' %}"></script>
+    <script src="{% static 'assets/plugins/bootstrap-daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'assets/plugins/bootstrap-datepicker/bootstrap-datepicker.js' %}"></script>
 
     <!-- Color Theme js -->
     <script src="{% static 'assets/js/themeColors.js' %}"></script>
@@ -219,6 +230,22 @@
     <!-- CUSTOM JS -->
     <script src="{% static 'assets/js/custom.js' %}"></script>
     
+    <script>
+        const sidebar = window.localStorage.getItem('sidebar');
+        if (sidebar == 'false') {
+            $(".sidebar-mini").addClass('sidenav-toggled');
+        }
+
+        $("#sidebar-toggle").click(function(){
+            const is_hidden = $(".sidebar-mini").hasClass("sidenav-toggled");
+            if (is_hidden) {
+                window.localStorage.setItem("sidebar", true);
+            } else {
+                window.localStorage.setItem("sidebar", false);
+            }
+        })
+    </script>
+
     {% block scripts %}
         
     {% endblock scripts %}

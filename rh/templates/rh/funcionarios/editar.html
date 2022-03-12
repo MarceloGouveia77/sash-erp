@@ -1,0 +1,76 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+
+{% block title %} Editar Funcionário {% endblock title %}
+{% block pagina_anterior %}Funcionários{% endblock pagina_anterior %}
+{% block pagina_atual %}Editar - {{ funcionario.nome }}{% endblock pagina_atual %}
+{% block pagina %}Editar - {{ funcionario.nome }}{% endblock pagina %}
+
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <form method="post">{% csrf_token %}
+                    <div class="row">
+                        <div class="col-12 col-md-6 col-lg-3">
+                            {{ form.nome|as_crispy_field }}
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-3">
+                            {{ form.cpf|as_crispy_field }}
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-3">
+                            {{ form.departamento|as_crispy_field }}
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-3">
+                            {{ form.email|as_crispy_field }}
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-2">
+                            {{ form.data_admissao|as_crispy_field }}
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-2">
+                            {{ form.celular|as_crispy_field }}
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-3">
+                            {{ form.endereco_rua|as_crispy_field }}
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-1">
+                            {{ form.endereco_numero|as_crispy_field }}
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-2">
+                            {{ form.endereco_bairro|as_crispy_field }}
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-2">
+                            {{ form.endereco_complemento|as_crispy_field }}
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-3">
+                            {{ form.endereco_cidade|as_crispy_field }}
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-3">
+                            {{ form.endereco_estado|as_crispy_field }}
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-3">
+                            {{ form.endereco_cep|as_crispy_field }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <button class="btn btn-sm btn-success" type="submit"><i class="fa fa-check"></i> Salvar</button>
+                            <a class="btn btn-sm btn-danger" href="{% url 'rh:funcionarios' %}"><i class="fa fa-arrow-left"></i> Voltar</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+
+{% block scripts %}
+<script src="{% static 'assets/plugins/input-mask/jquery.mask.min.js' %}"></script>
+{% endblock scripts %}
+    
