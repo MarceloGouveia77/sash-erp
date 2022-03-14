@@ -1,0 +1,92 @@
+{% extends 'core/base.html' %}
+
+{% block title %} Serviços {% endblock title %}
+{% block pagina_anterior %}.{% endblock pagina_anterior %}
+{% block pagina_atual %}Serviços{% endblock pagina_atual %}
+{% block pagina %}Serviços{% endblock pagina %}
+
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <a class="mt-1 btn btn-sm btn-success" href="{% url 'servico:cadastrar' %}"><i class="fe fe-plus"></i> Cadastrar</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Serviços</h3>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered text-nowrap border-bottom" id="servico-tabela">
+                        <thead>
+                            <tr>
+                                <th class="wd-15p border-bottom-0">ID</th>
+                                <th class="wd-15p border-bottom-0">Cliente</th>
+                                <th class="wd-15p border-bottom-0">Tipo</th>
+                                <th class="wd-15p border-bottom-0">Descrição</th>
+                                <th class="wd-15p border-bottom-0">Valor</th>
+                                <th class="wd-15p border-bottom-0">Data Início</th>
+                                <th class="wd-15p border-bottom-0">Data Conclusão</th>
+                                <th class="wd-15p border-bottom-0">Concluído</th>
+                                <th style="width: 5%;">Opções</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for s in servicos %}
+                                <tr>
+                                    <td>{{ s.id }}</td>
+                                    <td>{{ s.cliente }}</td>
+                                    <td>{{ s.tipo }}</td>
+                                    <td>{{ s.descricao }}</td>
+                                    <td>{{ s.valor }}</td>
+                                    <td>{{ s.obter_data_inicio }}</td>
+                                    <td>{{ s.obter_data_conclusao }}</td>
+                                    <td>{{ s.concluido }}</td>
+                                    <td class="text-center">
+                                        <a class="btn btn-sm btn-primary" href="{% url 'servico:editar' servico_id=s.id %}"><i class="fa fa-edit"></i> Editar</a>
+                                        <button 
+                                        type="button" 
+                                        servico-id="{{ s.id }}" 
+                                        class="btn btn-sm btn-danger btn-excluir-servico">
+                                        <i class="fa fa-trash"></i> 
+                                        Excluir
+                                        </button>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+
+{% block scripts %}
+<script>
+init_datatable("servico-tabela");
+
+$('.btn-excluir-servico').click(function(){
+    const servico_id = $(this).attr('servico-id')
+    const endpoint = `/servicos/deletar/${servico_id}/`
+    const confirmar = confirm('Você realmente quer deletar este serviço?')
+    
+    if (confirmar){
+        $.ajax({
+            url: endpoint,
+            type: 'DELETE',
+            success: function(result) {
+                window.location.reload();
+            }
+        });
+    }
+})
+</script>
+{% endblock scripts %}

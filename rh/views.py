@@ -18,10 +18,12 @@ def funcionarios(request):
 
 def cadastrar_funcionario(request):
     form = CadastrarFuncionarioForm(request.POST or None)
+    
     if form.is_valid():
         form.save()
         return redirect('rh:funcionarios')
-    return render(request, 'rh/funcionarios/cadastrar.html', {'form': form})
+    else:
+        return render(request, 'rh/funcionarios/cadastrar.html', {'form': form, 'errors': form.errors})
 
 def editar_funcionario(request, funcionario_id):
     funcionario = Funcionario.objects.get(id=funcionario_id)

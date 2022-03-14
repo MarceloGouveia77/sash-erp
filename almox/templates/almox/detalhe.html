@@ -1,0 +1,46 @@
+{% extends 'core/base.html' %}
+
+{% block title %} Almoxarifado {% endblock title %}
+{% block pagina_anterior %}Almoxarifado{% endblock pagina_anterior %}
+{% block pagina_atual %}{{ item }}{% endblock pagina_atual %}
+{% block pagina %}{{ item }}{% endblock pagina %}
+
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+             <div class="row">
+                 <div class="col-lg-4">
+                     <div class="row">
+                         <div class="col-12">
+                             <h3>
+                                 Detalhes
+                             </h3>
+                         </div>
+                         <div class="col-12">
+                             <strong>Item:</strong>
+                             {{ item }}
+                         </div>
+                         <div class="col-12">
+                            <strong>Categoria:</strong>
+                            {{ item.categoria }}
+                        </div>
+                        <div class="col-12">
+                            <strong>Quantidade:</strong>
+                            {{ item.quantidade }}
+                        </div>
+                        <div class="col-12">
+                            <strong>Valor:</strong>
+                            {{ item.valor }}
+                        </div>
+                     </div>
+                 </div>
+             </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
