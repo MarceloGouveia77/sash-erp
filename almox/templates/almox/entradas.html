@@ -1,0 +1,175 @@
+{% extends 'core/base.html' %}
+
+{% block title %} Entradas {% endblock title %}
+{% block pagina_anterior %}Almoxarifado{% endblock pagina_anterior %}
+{% block pagina_atual %}Entradas{% endblock pagina_atual %}
+{% block pagina %}Entradas{% endblock pagina %}
+
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <a class="mt-1 btn btn-sm btn-success" href="#" data-bs-toggle="modal" data-bs-target="#modal-adicionar-entrada"><i class="fe fe-plus"></i>Adicionar</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Entradas</h3>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered text-nowrap border-bottom" id="entradas-item-tabela">
+                        <thead>
+                            <tr>
+                                <th class="wd-15p border-bottom-0">ID</th>
+                                <th class="wd-15p border-bottom-0">Item</th>
+                                <th class="wd-15p border-bottom-0">Quantidade</th>
+                                <th class="wd-15p border-bottom-0">Funcionario</th>
+                                <th class="wd-15p border-bottom-0">Serviço</th>
+                                <th class="wd-15p border-bottom-0">Valor</th>
+                                <th style="width: 5%;">Opções</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for e in entradas %}
+                                <tr>
+                                    <td>{{ e.id }}</td>
+                                    <td><a href="{% url 'almox:detalhe' item_id=e.item.id %}">{{ e.item.nome }}</a></td>
+                                    <td>{{ e.quantidade }}</td>
+                                    <td>{{ e.entrada.funcionario }}</td>
+                                    <td>{{ e.entrada.servico }}</td>
+                                    <td>{{ e.valor }}</td>
+                                    <td class="text-center">
+                                        <a class="btn btn-sm btn-primary" href=""><i class="fa fa-edit"></i> Editar</a>
+                                        <button 
+                                        type="button" 
+                                        entrada-id="{{ e.id }}" 
+                                        class="btn btn-sm btn-danger btn-excluir-entrada">
+                                        <i class="fa fa-trash"></i> 
+                                        Excluir
+                                        </button>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal-adicionar-entrada">
+    <div class="modal-dialog modal-lg" role="document">
+        <form method="POST" id="form-adicionar-entrada">{% csrf_token %}
+            <div class="modal-content modal-content-demo">
+                    <div class="modal-header">
+                    <h6 class="modal-title">Adicionar Entrada</h6><button aria-label="Close" class="btn-close" data-bs-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <label class="form-label">Data</label>
+                            <input name="data-entrada" class="form-control mb-4" type="date">
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label class="form-label">Funcionário</label>
+                                <select name="funcionario" class="form-control form-select">
+                                        
+                                        {% for funcionario in funcionarios %}
+                                            <option value="{{ funcionario.id }}">{{ funcionario.nome}}</option>
+                                        {% endfor %}
+                                            
+                                    </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label class="form-label">Serviço</label>
+                                <select name="servico" class="form-control form-select">
+                                        
+                                        {% for servico in servicos %}
+                                            <option value="{{ servico.id }}">{{ servico.tipo.nome}}</option>
+                                        {% endfor %}
+                                            
+                                    </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label class="form-label">Item</label>
+                                <select name="item" class="form-control form-select">
+                                        
+                                        {% for item in items %}
+                                            <option value="{{ item.id }}">{{ item.nome}}</option>
+                                        {% endfor %}
+                                            
+                                    </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <label class="form-label">Quantidade</label>
+                            <input name="quantidade-item" class="form-control mb-4" type="number">
+                        </div>
+                        <div class="col-lg-4">
+                            <label class="form-label">Valor</label>
+                            <input name="valor-item" class="form-control mb-4" type="number">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary">Salvar</button> <button class="btn btn-light" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock content %}
+
+
+{% block scripts %}
+<script>
+$('#form-adicionar-entrada').submit(function(event){
+    event.preventDefault()
+   
+    const payload = {
+        'item_id': $('select[name="item"]').val(),
+        'quantidade': $('input[name="quantidade-item"]').val(),
+        'valor': $('input[name="valor-item"]').val(),
+        'funcionario': $('select[name="funcionario"]').val(),
+        'servico': $('select[name="servico"]').val(),
+        'data': $('input[name="data-entrada"]').val()
+    }
+    
+    console.log(payload)
+
+    $.post('/almox/entradas/adicionar/', payload, function(resp){
+        window.location.reload()
+    })
+})
+
+$('.btn-excluir-entrada').click(function(){
+    const entrada_id = $(this).attr('entrada-id')
+    const endpoint = `/almox/entradas/deletar/${entrada_id}/`
+    const confirmar = confirm('Você realmente quer deletar esta entrada?')
+    
+    if (confirmar){
+        $.ajax({
+            url: endpoint,
+            type: 'DELETE',
+            success: function(result) {
+                window.location.reload();
+            }
+        });
+    }
+})
+init_datatable("entradas-item-tabela");
+</script>
+{% endblock scripts %}

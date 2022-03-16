@@ -1,0 +1,32 @@
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm table-bordered text-nowrap border-bottom" id="item-tabela">
+                        <thead>
+                            <tr>
+                                <th class="wd-15p border-bottom-0">ID</th>
+                                <th class="wd-15p border-bottom-0">Data</th>
+                                <th class="wd-15p border-bottom-0">Funcionário</th>
+                                <th class="wd-15p border-bottom-0">Serviço</th>
+                                <th class="wd-15p border-bottom-0">Valor</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for e in entradas_item %}
+                                <tr>
+                                    <td>{{ e.entrada.id }}</td>
+                                    <td>{{ e.entrada.obter_data_entrada }}</></td>
+                                    <td>{{ e.entrada.funcionario }}</td>
+                                    <td>{{ e.entrada.servico }}</td>
+                                    <td>{{ e.entrada.valor_total }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

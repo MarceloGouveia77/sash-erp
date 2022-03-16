@@ -23,8 +23,8 @@
             <a class="side-menu__item" data-bs-toggle="slide" href="javascript:void(0)"><i class="side-menu__icon fe fe-box"></i><span class="side-menu__label">Almoxarifado</span><i class="angle fe fe-chevron-right"></i></a>
             <ul class="slide-menu">
                 <li><a href="{% url 'almox:index' %}" class="slide-item"> Almoxarifado</a></li>
-                <li><a href="" class="slide-item"> Entradas</a></li>
-                <li><a href="" class="slide-item"> Saídas</a></li>
+                <li><a href="{% url 'almox:entradas' %}" class="slide-item"> Entradas</a></li>
+                <li><a href="{% url 'almox:saidas' %}" class="slide-item"> Saídas</a></li>
             </ul>
         </li>
     </ul>

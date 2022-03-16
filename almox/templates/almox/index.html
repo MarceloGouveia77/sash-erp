@@ -1,9 +1,9 @@
 {% extends 'core/base.html' %}
 
-{% block title %} Serviços {% endblock title %}
+{% block title %} Almoxarifado {% endblock title %}
 {% block pagina_anterior %}.{% endblock pagina_anterior %}
-{% block pagina_atual %}Serviços{% endblock pagina_atual %}
-{% block pagina %}Serviços{% endblock pagina %}
+{% block pagina_atual %}Almoxarifado{% endblock pagina_atual %}
+{% block pagina %}Almoxarifado{% endblock pagina %}
 
 
 {% block content %}
@@ -11,14 +11,14 @@
     <div class="col-12">
         <div class="card">
             <div class="card-body">
-                <a class="mt-1 btn btn-sm btn-success" href="{% url 'servico:cadastrar' %}"><i class="fe fe-plus"></i> Cadastrar</a>
+                <a class="mt-1 btn btn-sm btn-success" href="{% url 'almox:cadastrar_item' %}"><i class="fe fe-plus"></i> Cadastrar</a>
             </div>
         </div>
     </div>
     <div class="col-12">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Serviços</h3>
+                <h3 class="card-title">Almoxarifado</h3>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -42,11 +42,11 @@
                                     <td>{{ i.categoria }}</td>
                                     <td>{{ i.valor }}</td>
                                     <td class="text-center">
-                                        <a class="btn btn-sm btn-primary" href=""><i class="fa fa-edit"></i> Editar</a>
+                                        <a class="btn btn-sm btn-primary" href="{% url 'almox:editar_item' item_id=i.id %}"><i class="fa fa-edit"></i> Editar</a>
                                         <button 
                                         type="button" 
-                                        servico-id="{{ s.id }}" 
-                                        class="btn btn-sm btn-danger btn-excluir-servico">
+                                        item-id="{{ i.id }}" 
+                                        class="btn btn-sm btn-danger btn-excluir-item">
                                         <i class="fa fa-trash"></i> 
                                         Excluir
                                         </button>
@@ -67,10 +67,10 @@
 <script>
 init_datatable("item-tabela");
 
-$('.btn-excluir-servico').click(function(){
-    const servico_id = $(this).attr('servico-id')
-    const endpoint = `/servicos/deletar/${servico_id}/`
-    const confirmar = confirm('Você realmente quer deletar este serviço?')
+$('.btn-excluir-item').click(function(){
+    const item_id = $(this).attr('item-id')
+    const endpoint = `/almox/item/deletar/${item_id}/`
+    const confirmar = confirm('Você realmente quer deletar este item?')
     
     if (confirmar){
         $.ajax({

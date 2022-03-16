@@ -44,6 +44,9 @@ class Entrada(models.Model):
         self.valor_total = self.calcular_valor_total()
         super().save(*args, **kwargs)
     
+    def obter_data_entrada(self):
+        return self.data.strftime('%d/%m/%Y')
+    
 class EntradaItem(models.Model):
     entrada = models.ForeignKey(Entrada, on_delete=models.CASCADE)
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
@@ -71,6 +74,9 @@ class Saida(models.Model):
     def save(self, *args, **kwargs):
         self.valor_total = self.calcular_valor_total()
         super().save(*args, **kwargs)
+    
+    def obter_data_saida(self):
+       return self.data.strftime('%d/%m/%Y')
     
     
 class SaidaItem(models.Model):
