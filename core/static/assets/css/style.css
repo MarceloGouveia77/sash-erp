@@ -40753,7 +40753,7 @@ div.dataTables_wrapper div.dataTables_filter input {
 #global-loader {
     position: fixed;
     z-index: 50000;
-    background: white;
+    background: #1a1a3c;
     left: 0;
     top: 0;
     right: 0;

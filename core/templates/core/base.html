@@ -34,7 +34,7 @@
     <link id="theme" rel="stylesheet" type="text/css" media="all" href="{% static 'assets/colors/color1.css' %}" />
 </head>
 
-<body class="app sidebar-mini ltr">
+<body class="app sidebar-mini ltr" id="body">
 
     <!-- GLOBAL-LOADER -->
     <div id="global-loader">
@@ -85,8 +85,8 @@
                                      
                                         <!-- SEARCH -->
                                         <div class="dropdown  d-flex">
-                                            <a class="nav-link icon theme-layout nav-link-bg layout-setting">
-                                                 <span class="dark-layout"><i class="fe fe-moon"></i></span>
+                                            <a class="nav-link icon theme-layout nav-link-bg layout-setting btn-layout-tema">
+                                                <span class="dark-layout"><i class="fe fe-moon"></i></span>
                                                 <span class="light-layout"><i class="fe fe-sun"></i></span>
                                             </a>
                                         </div>
@@ -242,6 +242,41 @@
                 window.localStorage.setItem("sidebar", true);
             } else {
                 window.localStorage.setItem("sidebar", false);
+            }
+        })
+    </script>
+
+    <script>
+        let tema_atual = window.localStorage.getItem('tema');
+        if (tema_atual == 'escuro'){
+            setTemaEscuro();
+        }
+
+
+        function setTemaEscuro(){
+            $('#body').addClass("dark-mode");
+        }
+
+        function setTemaClaro(){
+            $('#body').removeClass("dark-mode");
+        }
+
+        $(".btn-layout-tema").click(function(){
+            let tema_atual = window.localStorage.getItem('tema');
+
+            if (!tema_atual){
+                window.localStorage.setItem('tema', 'escuro');
+                setTemaEscuro();
+            }
+            
+            if (tema_atual == 'claro'){
+                window.localStorage.setItem('tema', 'escuro');
+                setTemaEscuro();
+            }
+
+            if (tema_atual == 'escuro'){
+                window.localStorage.setItem('tema', 'claro');
+                setTemaClaro();
             }
         })
     </script>

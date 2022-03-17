@@ -21,6 +21,7 @@ urlpatterns = [
     path('', include("core.urls")),
     path('rh/', include("rh.urls")),
     path('servicos/', include("servico.urls")),
-    path('almox/', include("almox.urls"))
+    path('almox/', include("almox.urls")),
+    path('compras/', include("compra.urls"))
     
 ]

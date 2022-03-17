@@ -1,0 +1,45 @@
+{% extends 'core/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %} Compras {% endblock title %}
+{% block pagina_anterior %}.{% endblock pagina_anterior %}
+{% block pagina_atual %}Cadastrar{% endblock pagina_atual %}
+{% block pagina %}Cadastrar{% endblock pagina %}
+
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xl-12">
+        <form method="post">{% csrf_token %}
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Informações</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-3">
+                            {{ form.solicitante|as_crispy_field }}
+                        </div>
+                        <div class="col-lg-2">
+                            {{ form.fornecedor|as_crispy_field }}
+                        </div>
+                        <div class="col-lg-2">
+                            {{ form.centro_custo|as_crispy_field }}
+                        </div>
+                        <div class="col-lg-3">
+                            {{ form.descricao|as_crispy_field }}
+                        </div>
+                        <div class="col-lg-2">
+                            {{ form.forma_pagamento|as_crispy_field }}
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <button type="submit" class="btn btn-success float-sm-end">Continuar<i class="fa fa-arrow-right ms-1"></i></button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock content %}
+    

@@ -1,0 +1,218 @@
+{% extends 'core/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %} Compras {% endblock title %}
+{% block pagina_anterior %}.{% endblock pagina_anterior %}
+{% block pagina_atual %}Editar{% endblock pagina_atual %}
+{% block pagina %}Editar{% endblock pagina %}
+
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xl-8">
+        <div class="card cart">
+            <div class="card-header">
+                <h3 class="card-title">Pedido #{{ compra.id }}</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-lg-3">
+                        <label class="form-label">Solicitante</label>
+                        <input name="data-entrada" class="form-control mb-4" type="text" value="{{ compra.solicitante }}" readonly>
+                    </div>
+                    <div class="col-lg-2">
+                        <label class="form-label">Fornecedor</label>
+                        <input name="data-entrada" class="form-control mb-4" type="text" value="{{ compra.fornecedor }}" readonly>
+                    </div>
+                    <div class="col-lg-2">
+                        <label class="form-label">Centro de Custo</label>
+                        <input name="data-entrada" class="form-control mb-4" type="text" value="{{ compra.centro_custo }}" readonly>
+                    </div>
+                    <div class="col-lg-3">
+                        <label class="form-label">Descrição</label>
+                        <input name="data-entrada" class="form-control mb-4" type="text" value="{{ compra.descricao }}" readonly>
+                    </div>
+                    <div class="col-lg-2">
+                        <label class="form-label">Forma de Pagamento</label>
+                        <input name="data-entrada" class="form-control mb-4" type="text" value="{{ compra.forma_pagamento }}" readonly>
+                    </div>
+                </div>
+                <hr>
+                
+            </div>
+            <div class="card-footer">
+                <div class="row">
+                    <div class="col-md-6 col-sm-6 text-end"><a href="javascript:void(0)" class="btn btn-default disabled btn-md">Update Cart</a></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-12 col-xl-4 col-sm-12 col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Cart Totals</div>
+            </div>
+            <div class="card-body py-2">
+                <div class="table-responsive">
+                    <table class="table table-borderless text-nowrap mb-0">
+                        <tbody>
+                            <tr>
+                                <td class="text-start">Subtotal</td>
+                                <td class="text-end"><span class="fw-bold  ms-auto">R$ 568,00</span></td>
+                            </tr>
+                            <tr>
+                                <td class="text-start">Descontos</td>
+                                <td class="text-end"><span class="fw-bold text-success">- R$ 55,00</span></td>
+                            </tr>
+                            <tr>
+                                <td class="text-start fs-18">Valor Total</td>
+                                <td class="text-end"><span class="ms-2 fw-bold fs-23">R$ 568,00</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="btn-list">
+                    <a href="checkout.html" class="btn btn-success float-sm-end">Check out<i class="fa fa-arrow-right ms-1"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-8">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Itens</h3>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-vcenter">
+                        <thead>
+                            <tr class="border-top">
+                                <th>Produto</th>
+                                <th>Preço</th>
+                                <th>Quantidade</th>
+                                <th>Subtotal</th>
+                                <th>Estoque</th>
+                                <th>Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in itens_compra %}
+                                <tr>
+                                    <td>{{ item.item.nome }}</td>
+                                    <td class="fw-bold">R$ {{ item.valor }}</td>
+                                    <td>
+                                        <div class="handle-counter" id="handleCounter4">
+                                            <button type="button" class="counter-minus btn btn-white lh-2 shadow-none" >
+                                                <i class="fa fa-minus text-muted"></i>
+                                            </button>
+                                            <input type="text" value="{{ item.quantidade }}" class="qty">
+                                            <button type="button" class="counter-plus btn btn-white lh-2 shadow-none">
+                                                <i class="fa fa-plus text-muted"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                    <td>R$ {{ item.obter_subtotal }}</td>
+                                    <td class="text-center">
+                                        <label class="custom-control custom-checkbox">
+                                            <input {% if item.estoque %} checked {% endif %} type="checkbox" class="custom-control-input" name="estoque" value="true">
+                                            <span class="custom-control-label"></span>
+                                        </label>
+                                    </td>
+                                    <td>
+                                        <div class=" d-flex g-2">
+                                            <a class="btn text-secondary bg-secondary-transparent btn-icon py-1 me-2" data-bs-toggle="tooltip" data-bs-original-title="Edit"><span class="bi bi-heart fs-16"></span></a>
+                                            <a class="btn text-danger bg-danger-transparent btn-icon py-1" data-bs-toggle="tooltip" data-bs-original-title="Delete"><span class="bi bi-trash fs-16"></span></a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="6" class="text-center">
+                                    <a 
+                                        href="#" 
+                                        class="btn btn-primary"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#modal-adicionar-item"
+                                        >
+                                    <i class="fa fa-plus me-1"></i>Adicionar Item</a>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal-adicionar-item">
+    <div class="modal-dialog modal-lg" role="document">
+        <form method="POST" id="form-adicionar-item">{% csrf_token %}
+            <div class="modal-content modal-content-demo">
+                    <div class="modal-header">
+                    <h6 class="modal-title">Adicionar Item</h6><button type="button" aria-label="Close" class="btn-close" data-bs-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <input type="hidden" name="compra_id" value="{{ compra.id }}">
+                                <label class="form-label">Item</label>
+                                <select name="item_id" class="form-control form-select">
+                                    {% for item in itens %}
+                                        <option value="{{ item.id }}">{{ item.nome}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <label class="form-label">Quantidade</label>
+                            <input name="item_quantidade" class="form-control mb-4" type="number">
+                        </div>
+                        <div class="col-lg-4">
+                            <label class="form-label">Valor</label>
+                            <input name="item_valor" class="form-control mb-4" type="number">
+                        </div>
+                        <div class="col-lg-4">
+                            <label class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" name="estoque" value="true">
+                                <span class="custom-control-label">Estoque</span>
+                            </label>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary">Salvar</button> 
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock content %}
+    
+
+{% block scripts %}
+<script>
+    $("#form-adicionar-item").submit(function(event){
+        event.preventDefault();
+
+        const data = $(this).serialize();
+        console.log(data);
+
+        $.post('/compras/adicionar/item/', data, function(resp) {
+            window.location.reload()
+        })
+    })
+</script>
+{% endblock scripts %}
+    

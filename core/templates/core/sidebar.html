@@ -20,6 +20,18 @@
             </ul>
         </li>
         <li class="slide">
+            <a class="side-menu__item" data-bs-toggle="slide" href="javascript:void(0)"><i class="side-menu__icon fe fe-dollar-sign"></i><span class="side-menu__label">Financeiro</span><i class="angle fe fe-chevron-right"></i></a>
+            <ul class="slide-menu">
+                <li><a href="{% url 'servico:index' %}" class="slide-item"> Financeiro</a></li>
+            </ul>
+        </li>
+        <li class="slide">
+            <a class="side-menu__item" data-bs-toggle="slide" href="javascript:void(0)"><i class="side-menu__icon fe fe-shopping-cart"></i><span class="side-menu__label">Compras</span><i class="angle fe fe-chevron-right"></i></a>
+            <ul class="slide-menu">
+                <li><a href="{% url 'compra:index' %}" class="slide-item"> Compras</a></li>
+            </ul>
+        </li>
+        <li class="slide">
             <a class="side-menu__item" data-bs-toggle="slide" href="javascript:void(0)"><i class="side-menu__icon fe fe-box"></i><span class="side-menu__label">Almoxarifado</span><i class="angle fe fe-chevron-right"></i></a>
             <ul class="slide-menu">
                 <li><a href="{% url 'almox:index' %}" class="slide-item"> Almoxarifado</a></li>
