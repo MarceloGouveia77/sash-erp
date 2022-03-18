@@ -1,22 +1,13 @@
 {% extends 'core/base.html' %}
 
-{% block title %} Compras {% endblock title %}
-{% block pagina_anterior %}.{% endblock pagina_anterior %}
-{% block pagina_atual %}Compras{% endblock pagina_atual %}
-{% block pagina %}Compras{% endblock pagina %}
-
+{% block title %} Recepção {% endblock title %}
+{% block pagina_anterior %}Almoxarifado{% endblock pagina_anterior %}
+{% block pagina_atual %}Recepção{% endblock pagina_atual %}
+{% block pagina %}Recepção{% endblock pagina %}
 
 
 {% block content %}
 <div class="row">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-body">
-                <a class="mt-1 btn btn-sm btn-success" href="{% url 'compra:cadastrar' %}"><i class="fe fe-plus"></i> Compra</a>
-            </div>
-        </div>
-    </div>
-
     <div class="col-12">
         <div class="card">
             <div class="card-header">
@@ -33,20 +24,18 @@
                                 <th class="wd-15p border-bottom-0">Centro de Custo</th>
                                 <th class="wd-15p border-bottom-0">Descrição</th>
                                 <th class="wd-15p border-bottom-0">Valor Total</th>
-                                <th class="wd-15p border-bottom-0">Entregue</th>
                             </tr>
                         </thead>
                         <tbody>
                             
                             {% for compra in compras %}
                                 <tr>
-                                    <td><a href="{% url 'compra:editar' compra_id=compra.id %}">{{ compra.id }}</a></td>
-                                    <td>{{ compra.data|date:'d/m/Y' }}</td>
+                                    <td>{{ compra.id }}</td>
+                                    <td><a href="{% url 'almox:recepcao' compra_id=compra.id %}">{{ compra.data|date:'d/m/Y' }}</a></td>
                                     <td>{{ compra.fornecedor }}</td>
                                     <td>{{ compra.centro_custo }}</td>
-                                    <td><a href="{% url 'compra:editar' compra_id=compra.id %}">{{ compra.descricao }}</a></td>
+                                    <td><a href="{% url 'almox:recepcao' compra_id=compra.id %}">{{ compra.descricao }}</a></td>
                                     <td>{{ compra.valor_total }}</td>
-                                    <td>{{ compra.entregue }}</td>
                                 </tr>
                             {% endfor %}
                                 

@@ -1,6 +1,7 @@
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from almox.models import Entrada, Item , Saida, EntradaItem, SaidaItem, Emprestimo
+from compra.models import Compra, CompraItem
 from rh.models import Funcionario
 from servico.models import Servico
 import datetime
@@ -163,3 +164,52 @@ def deletar_saida(request, saida_id):
         return JsonResponse({'msg':'Saída deletada com sucesso'}, status=200)
     else:
         return JsonResponse({'error':'Método não permitido'}, status=405)
+
+def recepcao_compras(request):
+    compras = Compra.objects.filter(entregue=False)
+    
+    data = {
+        'compras': compras
+    }
+    return render(request, 'almox/recepcao/index.html', data)
+
+def recepcao(request, compra_id):
+    compra = Compra.objects.get(id=int(compra_id))
+    compra_itens = CompraItem.objects.filter(compra=compra, recebido=False)
+    entradas_itens = EntradaItem.objects.filter(compra_item__compra=compra)
+    
+    data = {
+        'compra': compra,
+        'compra_itens': compra_itens,
+        'entradas_itens': entradas_itens
+    }
+    return render(request, 'almox/recepcao/recepcao.html', data)
+
+@csrf_exempt
+def receber_item_compra(request):
+    if request.method == 'POST':
+        compra_item_id = request.POST.get('compra_item_id')
+        compra_item = CompraItem.objects.get(id=int(compra_item_id))
+        
+        hoje = datetime.datetime.today().date()
+        
+        entrada, created = Entrada.objects.get_or_create(
+            compra=compra_item.compra,
+            data=hoje,
+            funcionario=Funcionario.objects.first(),
+            servico=None,
+        )
+        
+        if created:
+            entrada = Entrada.objects.get(compra=compra_item.compra)
+        
+        EntradaItem.objects.create(
+            compra_item=compra_item,
+            entrada=entrada,
+            item=compra_item.item,
+            quantidade=compra_item.quantidade,
+        )
+        compra_item.recebido = True
+        compra_item.save()
+        return JsonResponse({'msg':'Item recebido'}, status=200)
+    return JsonResponse({'error':'Método não permitido'}, status=405)

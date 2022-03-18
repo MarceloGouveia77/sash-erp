@@ -1,5 +1,4 @@
 from django.db import models
-from almox.models import Item
 from rh.models import Departamento, Funcionario
 
 # Create your models here.
@@ -38,13 +37,35 @@ class Compra(models.Model):
     valor_total = models.FloatField('Valor Total', default=0)
     descricao = models.CharField('Descrição', max_length=1024)
     
+    def recalcular_valor_total(self):
+        compra_itens = CompraItem.objects.filter(compra=self)
+        valor_total = 0
+        for compra in compra_itens:
+            valor_total += compra.valor_total
+        self.valor_total = valor_total
+        self.save()
+    
     
 class CompraItem(models.Model):
     compra = models.ForeignKey(Compra, on_delete=models.CASCADE)
-    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    item = models.ForeignKey('almox.Item', on_delete=models.CASCADE)
     valor = models.FloatField('Valor')
+    valor_total = models.FloatField('Valor', default=0)
     quantidade = models.FloatField('Quantidade')
     estoque = models.BooleanField('Estoque', default=True)
+    recebido = models.BooleanField('Recebido', default=False)
     
     def obter_subtotal(self):
         return self.valor * self.quantidade
+    
+    def alterar_quantidade(self, qtd):
+        self.quantidade += qtd
+        self.save()
+    
+    def save(self, *args, **kwargs):
+        if self.valor:
+            self.item.valor = self.valor
+            self.item.save()
+        self.valor_total = self.obter_subtotal()
+        super().save(*args, **kwargs)
+        self.compra.recalcular_valor_total()

@@ -1,5 +1,6 @@
 from django.db import models
 from rh.models import Funcionario
+from compra.models import Compra, CompraItem
 from servico.models import Servico
 import datetime
 # Create your models here.
@@ -28,6 +29,7 @@ class Item(models.Model):
         self.save()
 
 class Entrada(models.Model):
+    compra = models.ForeignKey(Compra, on_delete=models.CASCADE, blank=True, null=True)
     data = models.DateField('Data', auto_now=False, auto_now_add=False)
     funcionario = models.ForeignKey(Funcionario, on_delete=models.CASCADE)
     servico = models.ForeignKey(Servico, null=True, blank=True, on_delete=models.CASCADE)
@@ -48,6 +50,7 @@ class Entrada(models.Model):
         return self.data.strftime('%d/%m/%Y')
     
 class EntradaItem(models.Model):
+    compra_item = models.ForeignKey(CompraItem, on_delete=models.CASCADE, null=True, blank=True)
     entrada = models.ForeignKey(Entrada, on_delete=models.CASCADE)
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
     quantidade = models.FloatField('Quantidade', default=1)    

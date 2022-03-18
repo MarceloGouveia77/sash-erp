@@ -1,0 +1,142 @@
+{% extends 'core/base.html' %}
+
+{% block title %} Recepção {% endblock title %}
+{% block pagina_anterior %}Almoxarifado{% endblock pagina_anterior %}
+{% block pagina_atual %}Recepção{% endblock pagina_atual %}
+{% block pagina %}Recepção{% endblock pagina %}
+
+
+{% block content %}
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-dark text-white">
+                <h3 class="card-title">Detalhes</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-lg-3 col-xl-3">
+                        <label class="form-label">Solicitante</label>
+                        <input name="data-entrada" class="form-control mb-4" type="text" value="{{ compra.solicitante }}" readonly>
+                    </div>
+                    <div class="col-lg-3 col-xl-2">
+                        <label class="form-label">Fornecedor</label>
+                        <input name="data-entrada" class="form-control mb-4" type="text" value="{{ compra.fornecedor }}" readonly>
+                    </div>
+                    <div class="col-lg-3 col-xl-2">
+                        <label class="form-label">Centro de Custo</label>
+                        <input name="data-entrada" class="form-control mb-4" type="text" value="{{ compra.centro_custo }}" readonly>
+                    </div>
+                    <div class="col-lg-3 col-xl-3">
+                        <label class="form-label">Descrição</label>
+                        <input name="data-entrada" class="form-control mb-4" type="text" value="{{ compra.descricao }}" readonly>
+                    </div>
+                    <div class="col-lg-3 col-xl-2">
+                        <label class="form-label">Pagamento</label>
+                        <input name="data-entrada" class="form-control mb-4" type="text" value="{{ compra.forma_pagamento }}" readonly>
+                    </div>
+                </div>
+                <hr>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-6">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h3 class="card-title">Itens a Receber</h3>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Item</th>
+                                <th>Quantidade</th>
+                                <th>#</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for compra in compra_itens %}
+                                <tr>
+                                    <td>{{ compra.item.id }}</td>
+                                    <td>{{ compra.item }}</td>
+                                    <td>{{ compra.quantidade }}</td>
+                                    <td>
+                                        <button 
+                                            type="button" 
+                                            class="btn btn-sm btn-success btn-receber-item"
+                                            compra_item_id="{{ compra.id }}">
+                                            <i class="fa fa-arrow-right"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h3 class="card-title">Itens Recebidos</h3>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Item</th>
+                                <th>Quantidade</th>
+                                <th>#</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for entrada in entradas_itens %}
+                                <tr>
+                                    <td>{{ entrada.item.id }}</td>
+                                    <td>{{ entrada.item }}</td>
+                                    <td>{{ entrada.quantidade }}</td>
+                                    <td>
+                                        <button 
+                                            type="button" 
+                                            class="btn btn-sm btn-success btn-devolver-item"
+                                            compra_item_id="{{ compra.id }}">
+                                            <i class="fa fa-arrow-left"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+    
+
+{% block scripts %}
+<script>
+    $(".btn-receber-item").click(function(){
+        const data = {
+            'compra_item_id': $(this).attr("compra_item_id")
+        }
+         
+
+        $.post('/almox/recepcao/receber/item/', data, function(resp){
+            window.location.reload();
+        })
+    })
+</script>
+{% endblock scripts %}
+    
