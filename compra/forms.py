@@ -5,4 +5,4 @@ class CompraForm(forms.ModelForm):
     
     class Meta:
         model = Compra
-        exclude = ('data', 'pago', 'valor_total', 'entregue')
+        exclude = ('data', 'pago', 'valor_total', 'entregue', 'concluida')

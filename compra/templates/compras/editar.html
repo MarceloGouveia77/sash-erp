@@ -1,4 +1,5 @@
 {% extends 'core/base.html' %}
+{% load filtros %}
 {% load crispy_forms_tags %}
 
 {% block title %} Compras {% endblock title %}
@@ -75,7 +76,11 @@
             </div>
             <div class="card-footer">
                 <div class="btn-list">
-                    <a href="checkout.html" class="btn btn-success float-sm-end">Concluir Compra<i class="fa fa-arrow-right ms-1"></i></a>
+                    {% if not compra.concluida %}
+                        <a href="#" compra_id="{{ compra.id }}" class="btn btn-success btn-concluir-compra float-sm-end">Concluir Compra<i class="fa fa-arrow-right ms-1"></i></a>
+                    {% else %}
+                        <button type="button" disabled class="btn btn-danger float-sm-end">Compra Finalizada<i class="fa fa-check ms-1"></i></button>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -108,11 +113,11 @@
                                     <td class="fw-bold">R$ {{ item.valor }}</td>
                                     <td>
                                         <div class="handle-counter" id="handleCounter4">
-                                            <button type="button" acao="subtrair" compra_item_id="{{ item.id }}" class="counter-minus btn btn-white lh-2 shadow-none btn-remover-quantidade" >
+                                            <button type="button" {% if compra.concluida %} disabled {% endif %} acao="subtrair" compra_item_id="{{ item.id }}" class="counter-minus btn btn-white lh-2 shadow-none btn-remover-quantidade" >
                                                 <i class="fa fa-minus text-muted"></i>
                                             </button>
                                             <input type="text" value="{{ item.quantidade }}" class="qty {{ item.id }}-quantidade">
-                                            <button type="button" acao="adicionar" compra_item_id="{{ item.id }}" class="counter-plus btn btn-white lh-2 shadow-none btn-adicionar-quantidade">
+                                            <button type="button" {% if compra.concluida %} disabled {% endif %} acao="adicionar" compra_item_id="{{ item.id }}" class="counter-plus btn btn-white lh-2 shadow-none btn-adicionar-quantidade">
                                                 <i class="fa fa-plus text-muted"></i>
                                             </button>
                                         </div>
@@ -120,13 +125,14 @@
                                     <td>R$ <span class="{{ item.id }}-subtotal">{{ item.obter_subtotal }}</span></td>
                                     <td class="text-center">
                                         <label class="custom-control custom-checkbox">
-                                            <input {% if item.estoque %} checked {% endif %} type="checkbox" class="custom-control-input" name="estoque" value="true">
+                                            <input {% if item.estoque %} checked {% endif %} {% if compra.concluida %} disabled {% endif %} type="checkbox" class="custom-control-input" name="estoque" value="true">
                                             <span class="custom-control-label"></span>
                                         </label>
                                     </td>
                                     <td>
                                         <div class=" d-flex g-2">
                                             <button 
+                                                {% if compra.concluida %} disabled {% endif %}+
                                                 type="button" 
                                                 class="btn text-danger bg-danger-transparent btn-icon py-1 btn-deletar-item" 
                                                 data-bs-toggle="tooltip" 
@@ -143,18 +149,53 @@
                         <tfoot>
                             <tr>
                                 <td colspan="6" class="text-center">
-                                    <a 
-                                        href="#" 
+                                    <button 
+                                        {% if compra.concluida %} disabled {% endif %}+
+                                        type="button"
                                         class="btn btn-primary"
                                         data-bs-toggle="modal"
                                         data-bs-target="#modal-adicionar-item"
                                         >
-                                    <i class="fa fa-plus me-1"></i>Adicionar Item</a>
+                                    <i class="fa fa-plus me-1"></i>Adicionar Item</button>
                                 </td>
                             </tr>
                         </tfoot>
                     </table>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">Pagamentos</h5>
+            </div>
+            <div class="card-body">
+                <div class="row mb-1">
+                    <div class="col-4 fw-bold">
+                        Vencimento
+                    </div>
+                    <div class="col-4 fw-bold">
+                        Descrição
+                    </div>
+                    <div class="col-4 fw-bold">
+                        Pago
+                    </div>
+                </div>
+                {% for pagamento in pagamentos %}
+                    <div class="row">
+                        <div class="col-4">
+                            {{ pagamento.obter_vencimento }}
+                        </div>
+                        <div class="col-4">
+                            {{ pagamento.descricao }}
+                        </div>
+                        <div class="col-4">
+                            {{ pagamento.pago|obter_icone_pago|safe }}
+                        </div>
+                    </div>
+                {% endfor %}
             </div>
         </div>
     </div>
@@ -198,7 +239,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-primary">Salvar</button> 
+                    <button type="submit" class="btn btn-primary">Salvar</button> 
                     <button type="button" class="btn btn-light" data-bs-dismiss="modal">Fechar</button>
                 </div>
             </div>
@@ -210,6 +251,16 @@
 
 {% block scripts %}
 <script>
+    $(".btn-concluir-compra").click(function(){
+        const data = {
+            'compra_id': $(this).attr("compra_id")
+        }
+
+        $.post('/compras/concluir/', data, function(resp){
+            window.location.reload();
+        })
+    })
+
     $(".btn-adicionar-quantidade, .btn-remover-quantidade").click(function(){
         const data = {
             'compra_item_id': $(this).attr("compra_item_id"),

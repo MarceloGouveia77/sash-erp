@@ -1,5 +1,8 @@
 from django.db import models
 from rh.models import Departamento, Funcionario
+from financeiro.models import Pagamentos, ContasPagar
+import datetime
+from dateutil.relativedelta import relativedelta
 
 # Create your models here.
 
@@ -33,6 +36,7 @@ class Compra(models.Model):
     centro_custo = models.ForeignKey(Departamento, on_delete=models.CASCADE)
     forma_pagamento = models.CharField('Forma de Pagamento', max_length=50, choices=FORMAS_PAGAMENTO, default='avista')
     pago = models.BooleanField('Pago', default=False)
+    concluida = models.BooleanField('Concluida', default=False)
     entregue = models.BooleanField('Entregue', default=False)
     valor_total = models.FloatField('Valor Total', default=0)
     descricao = models.CharField('Descrição', max_length=1024)
@@ -45,6 +49,35 @@ class Compra(models.Model):
         self.valor_total = valor_total
         self.save()
     
+    def inicializar_pagamentos(self):
+        hoje = datetime.datetime.today()
+        conta = ContasPagar.objects.create(
+            compra=self,
+            forma_pagamento=self.forma_pagamento,
+            descricao=self.descricao,
+            data=self.data,
+            valor_total=self.valor_total,
+            valor_pago=0
+        )
+        
+        if self.forma_pagamento != 'avista':
+            parcelas = int(self.forma_pagamento.replace("x", ""))
+            intervalo = 30
+            valor_parcela = (conta.valor_total / parcelas)
+            for i in range(1, parcelas+1):
+                Pagamentos.objects.create(
+                    conta=conta,
+                    vencimento=hoje + relativedelta(days=(intervalo*i)),
+                    descricao=f'Parcela {i}/{parcelas}',
+                    valor=valor_parcela
+                )
+        else:
+            Pagamentos.objects.create(
+                conta=conta,
+                vencimento=hoje,
+                descricao=f'Pagamento À Vista',
+                valor=self.valor_total
+            )
     
 class CompraItem(models.Model):
     compra = models.ForeignKey(Compra, on_delete=models.CASCADE)

@@ -3,6 +3,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render, redirect
 from compra.models import Compra, CompraItem
 from compra.forms import CompraForm
+from financeiro.models import Pagamentos
 from almox.models import Item
 
 # Create your views here.
@@ -33,7 +34,25 @@ def editar(request, compra_id):
         'itens': Item.objects.all(),
         'itens_compra': itens_compra
     }
+    
+    if compra.concluida:
+        pagamentos = Pagamentos.objects.filter(conta__compra=compra)
+        data['pagamentos'] = pagamentos
+        
     return render(request, 'compras/editar.html', data)
+
+@csrf_exempt
+def concluir_compra(request):
+    if request.method == "POST":
+        compra_id = request.POST.get("compra_id")
+        compra = Compra.objects.get(id=int(compra_id))
+        compra.concluida = True
+        compra.inicializar_pagamentos()
+        compra.save()
+        
+        return JsonResponse({'msg': 'Compra finalizada com sucesso'}, status=200)
+    return JsonResponse({'error': 'Método não permitido'}, status=405)
+    
 
 def adicionar_item_compra(request):
     if request.method == "POST":
