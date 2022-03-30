@@ -1,0 +1,78 @@
+{% extends 'financeiro/contas_pagar.html' %}
+{% load humanize %}
+
+{% block tab-pagar %}
+{% include 'financeiro/pagar_form.html' %}
+
+<div class="modal fade" id="modal-pagar">
+    <div class="modal-dialog modal-md" role="document">
+        <form method="post" id="form-pagar-conta">
+            <div class="modal-content modal-content-demo">
+                <div class="modal-header">
+                    <h6 class="modal-title">Pagar Conta</h6><button aria-label="Close" class="btn-close"
+                        data-bs-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <span><b>Descrição: </b><span class="modal-descricao"></span></span>
+                            <br>
+                            <span><b>Vencimento: </b><span class="modal-vencimento"></span></span>
+                            <br>
+                            <span><b>Valor: </b><span class="modal-valor"></span></span>
+                            <br>
+                            <br>
+                        </div>
+                        <div class="col-6">
+                            <input type="hidden" name="pagamento-id" id="pagamento-id">
+                            <label for="data-pagamento">Data Pagamento</label>
+                            <input class="form-control" type="date" name="data-pagamento" id="data-pagamento">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-sm btn-success btn-submit-pagamento"><i class="fa fa-check"></i> Pagar</button>
+                    <button type="button" class="btn btn-light btn-fechar-modal-pagamento" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock tab-pagar %}
+    
+{% block scripts %}
+<script>
+    init_datatable("tabela-pagar");
+
+    $(".btn-pagar").click(function(){
+        const descricao = $(this).attr("descricao");
+        const valor = $(this).attr("valor");
+        const vencimento = $(this).attr("vencimento");
+        const pagamento_id = $(this).attr("pagamento-id");
+
+        $(".modal-descricao").text(descricao);
+        $(".modal-vencimento").text(vencimento);
+        $(".modal-valor").text(valor);
+        $("#pagamento-id").val(pagamento_id);
+    })
+
+    $("#form-pagar-conta").submit(function(event){
+        $(".btn-submit-pagamento").attr("disabled", true);
+        event.preventDefault();
+
+        const data = {
+            'pagamento_id': $("#pagamento-id").val(),
+            'data_pagamento': $("#data-pagamento").val()
+        }
+
+        $.post('/financeiro/contas/pagamentos/pagar/', data, function(resp){
+            $(`.tr-pagamento-${$("#pagamento-id").val()}`).remove();
+            $(".btn-submit-pagamento").attr("disabled", false);
+            
+            $("#modal-pagar").modal('hide');
+        })
+    })
+</script>
+{% endblock scripts %}
+    

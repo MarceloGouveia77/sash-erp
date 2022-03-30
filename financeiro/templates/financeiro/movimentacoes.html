@@ -1,0 +1,66 @@
+{% extends 'core/base.html' %}
+{% load humanize %}
+{% load filtros %}
+
+{% block title %} Financeiro {% endblock title %}
+{% block pagina_anterior %}.{% endblock pagina_anterior %}
+{% block pagina_atual %}Financeiro{% endblock pagina_atual %}
+{% block pagina %}Financeiro{% endblock pagina %}
+
+
+{% block content %}
+<div class="row">
+
+    {% include 'financeiro/menu.html' %}
+
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Movimentações</h3>
+            </div>
+            <div class="card-body">
+                {% if movimentacoes %}
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-sm text-nowrap border-bottom" id="tabela-movimentacoes">
+                            <thead>
+                                <tr>
+                                    <th class="wd-15p border-bottom-0">Tipo</th>
+                                    <th class="wd-15p border-bottom-0">Data</th>
+                                    <th class="wd-15p border-bottom-0">Descrição</th>
+                                    <th class="wd-15p border-bottom-0">Valor</th>
+                                    <th class="wd-15p border-bottom-0">Saldo Inicial</th>
+                                    <th class="wd-15p border-bottom-0">Saldo Final</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                                {% for movimentacao in movimentacoes %}
+                                    <tr>
+                                        {% if movimentacao.tipo == 'entrada' %}
+                                            <td class="text-success fw-bold text-center">Entrada</td>
+                                        {% else %}
+                                            <td class="text-danger fw-bold text-center">Saída</td>
+                                        {% endif %}
+                                        <td>{{ movimentacao.data|date:'d/m/Y' }}</td>
+                                        <td>{{ movimentacao.obter_descricao }}</td>
+                                        <td>R$ {{ movimentacao.obter_valor|formatar_valor|intcomma }}</td>
+                                        <td>R$ {{ movimentacao.saldo_anterior|formatar_valor|intcomma }}</td>
+                                        <td>R$ {{ movimentacao.saldo|formatar_valor|intcomma }}</td>
+                                    </tr>
+                                {% endfor %}
+                                    
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <h5>Não foram encontradas movimentações</h5>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

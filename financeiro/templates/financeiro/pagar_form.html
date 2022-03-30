@@ -1,0 +1,85 @@
+{% load filtros %}
+
+{% if pagamentos %}
+    <form class="form-horizontal" method="get">
+        <div class="row mb-4">
+            <div class="col-lg-2">
+                <input 
+                    class="form-control" 
+                    required 
+                    type="text" 
+                    onfocus="(this.type='date')" 
+                    name="data-inicial" 
+                    id="data-inicial" 
+                    placeholder="Data Inicial"
+                    value="{{ data_inicial }}"
+                >
+            </div>
+            <div class="col-lg-2">
+                <input 
+                    class="form-control" 
+                    required 
+                    type="text" 
+                    onfocus="(this.type='date')" 
+                    name="data-final" 
+                    id="data-final" 
+                    placeholder="Data Final"
+                    value="{{ data_final }}"
+                >
+            </div>
+            <div class="col-lg-2">
+                <button id="btn-buscar" class="btn btn-sm btn-primary mt-1" type="submit"><i class="fa fa-search"></i> Buscar</button>
+            </div>
+            <div class="col-lg-6 text-end">
+                <h5><b>Valor Total</b> R$ {{ valor_total|formatar_valor }}</h5>
+            </div>
+        </div>
+    </form>
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-sm text-nowrap border-bottom" id="tabela-pagar">
+            <thead>
+                <tr>
+                    <th class="wd-15p border-bottom-0">ID</th>
+                    <th class="wd-15p border-bottom-0">Descrição</th>
+                    <th class="wd-15p border-bottom-0">Valor</th>
+                    <th class="wd-15p border-bottom-0">Vencimento</th>
+                    <th class="wd-15p border-bottom-0">Opções</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+                {% for pagamento in pagamentos %}
+                    <tr class="tr-pagamento-{{ pagamento.id }}">
+                        
+                        <td>{{ pagamento.id }}</td>
+                        <td>{{ pagamento.conta.descricao|title }} - {{ pagamento.descricao|title }}</td>
+                        <td>R$ {{ pagamento.obter_valor }}</td>
+                        <td>{{ pagamento.vencimento|date:'d/m/Y' }}</td>
+                        <td class="text-center">
+                            <a 
+                                class="btn-pagar"
+                                href="#" 
+                                data-bs-toggle="modal" 
+                                data-bs-target="#modal-pagar"
+                                descricao="{{ pagamento.conta.descricao|title }} - {{ pagamento.descricao|title }}"
+                                valor="R$ {{ pagamento.obter_valor }}"
+                                vencimento="{{ pagamento.vencimento|date:'d/m/Y' }}"
+                                pagamento-id="{{ pagamento.id }}"
+                                >
+                                <i class="text-success fe fe-check-circle"></i> 
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                    
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    <div class="row">
+        <div class="col-12 text-center">
+            <h5>Não foram encontradas contas a pagar</h5>
+        </div>
+    </div>
+{% endif %}

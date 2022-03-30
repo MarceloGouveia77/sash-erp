@@ -3,7 +3,7 @@ from django.shortcuts import redirect, render
 from almox.models import Entrada, Item , Saida, EntradaItem, SaidaItem, Emprestimo
 from compra.models import Compra, CompraItem
 from rh.models import Funcionario
-from servico.models import Servico
+from servico.models import OrdemServico, Servico
 import datetime
 from django.views.decorators.csrf import csrf_exempt
 from almox.forms import ItemForm
@@ -84,13 +84,13 @@ def saidas(request):
     items = Item.objects.all()
     saidas = SaidaItem.objects.all()
     funcionarios = Funcionario.objects.all()
-    servicos = Servico.objects.all()
+    ordens = OrdemServico.objects.all()
     
     data = {
         'saidas':saidas,
         'items':items,
         'funcionarios':funcionarios,
-        'servicos':servicos
+        'ordens': ordens
         
     }
     return render(request, 'almox/saidas.html', data)
@@ -132,14 +132,14 @@ def adicionar_saida(request):
         funcionario = request.POST.get("funcionario")
         item_id = request.POST.get("item_id")
         quantidade = request.POST.get("quantidade")
-        servico = request.POST.get("servico")
+        os = request.POST.get("os")
         valor = request.POST.get("valor")
         
         try:
             saida = Saida(
                 data = datetime.datetime.strptime(data, '%Y-%m-%d'),
                 funcionario = Funcionario.objects.get(id=int(funcionario)),
-                servico = Servico.objects.get(id=int(servico))
+                os = OrdemServico.objects.get(id=int(os))
             )
             saida.save()
             

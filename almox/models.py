@@ -1,7 +1,7 @@
 from django.db import models
 from rh.models import Funcionario
 from compra.models import Compra, CompraItem
-from servico.models import Servico
+from servico.models import OrdemServico, Servico
 import datetime
 # Create your models here.
 
@@ -32,7 +32,7 @@ class Entrada(models.Model):
     compra = models.ForeignKey(Compra, on_delete=models.CASCADE, blank=True, null=True)
     data = models.DateField('Data', auto_now=False, auto_now_add=False)
     funcionario = models.ForeignKey(Funcionario, on_delete=models.CASCADE)
-    servico = models.ForeignKey(Servico, null=True, blank=True, on_delete=models.CASCADE)
+    os = models.ForeignKey(OrdemServico, null=True, blank=True, on_delete=models.CASCADE)
     valor_total = models.FloatField('Valor Total')
     
     def calcular_valor_total(self):
@@ -64,7 +64,7 @@ class EntradaItem(models.Model):
 class Saida(models.Model):
     data = models.DateField('Data', auto_now=False, auto_now_add=False)
     funcionario = models.ForeignKey(Funcionario, on_delete=models.CASCADE)
-    servico = models.ForeignKey(Servico, null=True, blank=True, on_delete=models.CASCADE)
+    os = models.ForeignKey(OrdemServico, null=True, blank=True, on_delete=models.CASCADE)
     valor_total = models.FloatField('Valor Total')
     
     def calcular_valor_total(self):
@@ -87,6 +87,9 @@ class SaidaItem(models.Model):
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
     quantidade = models.FloatField('Quantidade', default=1) 
     valor = models.FloatField('Valor')
+    
+    def obter_valor(self):
+        return self.quantidade * self.valor
     
     def save(self, *args, **kwargs):
         if not self.id:

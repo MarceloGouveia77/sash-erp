@@ -1,0 +1,14 @@
+{% extends 'financeiro/contas_pagar.html' %}
+{% load humanize %}
+
+{% block tab-historico %}
+{% include 'financeiro/pagar_form.html' %}
+{% endblock tab-historico %}
+    
+
+{% block scripts %}
+<script>
+    init_datatable("tabela-pagar");
+</script>
+{% endblock scripts %}
+    

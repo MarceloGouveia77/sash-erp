@@ -17,25 +17,10 @@
                 <form method="post">{% csrf_token %}
                     <div class="row">
                         <div class="col-12 col-md-6 col-lg-3">
-                            {{ form.cliente|as_crispy_field }}
-                        </div>
-                        <div class="col-12 col-md-6 col-lg-3">
-                            {{ form.tipo|as_crispy_field }}
-                        </div>
-                        <div class="col-12 col-md-6 col-lg-3">
                             {{ form.descricao|as_crispy_field }}
                         </div>
                         <div class="col-12 col-md-6 col-lg-3">
                             {{ form.valor|as_crispy_field }}
-                        </div>
-                        <div class="col-12 col-md-6 col-lg-3">
-                            {{ form.data|as_crispy_field }}
-                        </div>
-                        <div class="col-12 col-md-6 col-lg-3">
-                            {{ form.data_conclusao|as_crispy_field }}
-                        </div>
-                        <div class="col-12 col-md-6 col-lg-3">
-                            {{ form.concluido|as_crispy_field }}
                         </div>
                     </div>
                     <div class="row">

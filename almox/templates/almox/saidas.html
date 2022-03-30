@@ -29,7 +29,7 @@
                                 <th class="wd-15p border-bottom-0">Item</th>
                                 <th class="wd-15p border-bottom-0">Quantidade</th>
                                 <th class="wd-15p border-bottom-0">Funcionario</th>
-                                <th class="wd-15p border-bottom-0">Serviço</th>
+                                <th class="wd-15p border-bottom-0">OS</th>
                                 <th class="wd-15p border-bottom-0">Valor</th>
                                 <th style="width: 5%;">Opções</th>
                             </tr>
@@ -41,8 +41,8 @@
                                     <td><a href="{% url 'almox:detalhe' item_id=s.item.id %}">{{ s.item.nome }}</a></td>
                                     <td>{{ s.quantidade }}</td>
                                     <td>{{ s.saida.funcionario }}</td>
-                                    <td>{{ s.saida.servico }}</td>
-                                    <td>{{ s.valor }}</td>
+                                    <td>{{ s.saida.os }}</td>
+                                    <td>R$ {{ s.obter_valor }}</td>
                                     <td class="text-center">
                                         <a class="btn btn-sm btn-primary" href=""><i class="fa fa-edit"></i> Editar</a>
                                         <button 
@@ -89,11 +89,11 @@
                         </div>
                         <div class="col-lg-4">
                             <div class="form-group">
-                                <label class="form-label">Serviço</label>
-                                <select name="servico" class="form-control form-select">
+                                <label class="form-label">OS</label>
+                                <select name="os" class="form-control form-select">
                                         
-                                        {% for servico in servicos %}
-                                            <option value="{{ servico.id }}">{{ servico.tipo.nome}}</option>
+                                        {% for os in ordens %}
+                                            <option value="{{ os.id }}">{{ os.descricao }}</option>
                                         {% endfor %}
                                             
                                     </select>
@@ -145,7 +145,7 @@ $('#form-adicionar-saida').submit(function(event){
         'quantidade': $('input[name="quantidade-item"]').val(),
         'valor': $('input[name="valor-item"]').val(),
         'funcionario': $('select[name="funcionario"]').val(),
-        'servico': $('select[name="servico"]').val(),
+        'os': $('select[name="os"]').val(),
         'data': $('input[name="data-saida"]').val()
     }
     

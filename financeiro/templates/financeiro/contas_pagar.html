@@ -1,0 +1,51 @@
+{% extends 'core/base.html' %}
+{% load humanize %}
+
+{% block title %} Contas a Pagar {% endblock title %}
+{% block pagina_anterior %}Financeiro{% endblock pagina_anterior %}
+{% block pagina_atual %}Contas A Pagar{% endblock pagina_atual %}
+{% block pagina %}Financeiro{% endblock pagina %}
+
+
+{% block content %}
+<div class="row">
+
+    {% include 'financeiro/menu.html' %}
+
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="panel panel-primary">
+                    <div class="tab-menu-heading tab-menu-heading-boxed">
+                        <div class="tabs-menu-boxed">
+                            <!-- Tabs -->
+                            <ul class="nav panel-tabs">
+                                <li><a href="{% url 'financeiro:contas_pagar' %}" class="{{ tab_contas }}">Contas</a></li>
+                                <li><a href="{% url 'financeiro:pagar' pagina='pendentes' %}" class="{{ tab_pagar }}">A Pagar</a></li>
+                                <li><a href="{% url 'financeiro:pagar' pagina='historico' %}" class="{{ tab_historico }}">Histórico</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="panel-body tabs-menu-body">
+                        <div class="tab-content">
+                            <div class="tab-pane {{ tab_contas }}" id="tab-contas">
+                                {% block tab-contas %}
+                                {% endblock tab-contas %}
+                            </div>
+                            <div class="tab-pane {{ tab_pagar }}" id="tab-pagar">
+                                {% block tab-pagar %}
+                                {% endblock tab-pagar %}
+                            </div>
+                            <div class="tab-pane {{ tab_historico }}" id="tab-historico">
+                                {% block tab-historico %}
+                                {% endblock tab-historico %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock content %}

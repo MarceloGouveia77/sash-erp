@@ -1,7 +1,8 @@
 from ast import Delete
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
-from servico.models import Servico
+from almox.models import SaidaItem
+from servico.models import OrdemServico, Servico, ServicosOS
 from servico.forms import ServicoForm
 from django.views.decorators.csrf import csrf_exempt
 
@@ -45,3 +46,35 @@ def deletar(request, servico_id):
         return JsonResponse({'msg':'Serviço deletado com sucesso'}, status=200)
     else:
         return JsonResponse({'error':'Método não permitido'}, status=405)
+    
+def detalhe_os(request, os_id):
+    os = OrdemServico.objects.get(id=os_id)
+    servicos_os = ServicosOS.objects.filter(os=os)
+    saidas = SaidaItem.objects.filter(saida__os=os)
+    
+    total_servicos, total_saidas = 0, 0
+    
+    for servico in servicos_os:
+        total_servicos += servico.obter_valor()
+        
+    for saida in saidas:
+        total_saidas += saida.obter_valor()
+    
+    data = {
+        'os': os,
+        'servicos_os': servicos_os,
+        'saidas': saidas,
+        'total_servicos': total_servicos,
+        'total_saidas': total_saidas,
+        'total_os': (total_servicos + total_saidas)
+    }
+    
+    return render(request, 'os/detalhe.html', data)
+
+def os(request):
+    ordens = OrdemServico.objects.all()
+    
+    data = {
+        'ordens': ordens
+    }
+    return render(request, 'os/index.html', data)

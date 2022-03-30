@@ -1,0 +1,117 @@
+{% extends 'financeiro/contas_pagar.html' %}
+{% load humanize %}
+{% load filtros %}
+
+{% block tab-contas %}
+
+{% if contas %}
+    <div class="table-responsive">
+        <table class="table table-bordered table-sm text-nowrap border-bottom" id="tabela-contas">
+            <thead>
+                <tr>
+                    <th class="wd-15p border-bottom-0">ID</th>
+                    <th class="wd-15p border-bottom-0">Data</th>
+                    <th class="wd-15p border-bottom-0">Descrição</th>
+                    <th class="wd-15p border-bottom-0">Forma de Pagamento</th>
+                    <th class="wd-15p border-bottom-0">Valor Pago</th>
+                    <th class="wd-15p border-bottom-0">Valor Total</th>
+                    <th class="wd-15p border-bottom-0">Status</th>
+                    <th class="wd-15p border-bottom-0">Opções</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+                {% for conta in contas %}
+                    <tr>
+                        
+                        <td>{{ conta.id }}</td>
+                        <td>{{ conta.data|date:'d/m/Y' }}</td>
+                        <td>{{ conta.descricao|title }}</td>
+                        <td>
+                            <a 
+                                href="#" 
+                                class="btn-detalhes-pagamento"
+                                data-bs-toggle="modal" 
+                                conta-id="{{ conta.id }}" 
+                                data-bs-target="#modal-pagamentos"
+                                >
+                                {{ conta.get_forma_pagamento_display }}
+                            </a>
+                        </td>
+                        <td>R$ {{ conta.valor_pago|formatar_valor|intcomma }}</td>
+                        <td>R$ {{ conta.valor_total|formatar_valor|intcomma }}</td>
+                        <td class="text-center">{{ conta.obter_status|safe }}</td>
+                        <td class="text-center">
+                            -
+                        </td>
+                    </tr>
+                {% endfor %}
+                    
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    <div class="row">
+        <div class="col-12 text-center">
+            <h5>Não foram encontradas contas a pagar</h5>
+        </div>
+    </div>
+{% endif %}
+
+<div class="modal fade" id="modal-pagamentos">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content modal-content-demo">
+                <div class="modal-header">
+                <h6 class="modal-title">Pagamentos</h6><button aria-label="Close" class="btn-close" data-bs-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Descrição</th>
+                                    <th>Valor</th>
+                                    <th>Vencimento</th>
+                                    <th>Pago</th>
+                                </tr>
+                            </thead>
+                            <tbody class="tbody">
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                </div>                
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-light" data-bs-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock tab-contas %}
+
+{% block scripts %}
+<script>
+    init_datatable("tabela-contas");
+
+    $('.btn-detalhes-pagamento').click(function(){
+        const conta_id = $(this).attr("conta-id");
+        const endpoint = `/financeiro/json/conta/pagamentos/${conta_id}/`
+
+        $.get(endpoint, function(resp){
+            resp.map(conta => {
+                $(".tbody").append(`
+                    <tr>
+                        <td>${conta.descricao}</td>
+                        <td>${conta.valor}</td>
+                        <td>${conta.vencimento}</td>
+                        <td>${conta.pago ? '<span class="text-success fw-bold">SIM</span>' : '<span class="text-danger fw-bold">NÃO</span>'}</td>
+                    </tr>
+                `)
+            })
+        })
+    })
+</script>
+{% endblock scripts %}
+    

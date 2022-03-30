@@ -1,0 +1,191 @@
+{% extends 'core/base.html' %}
+
+{% block title %} {{ os }} {% endblock title %}
+{% block pagina_anterior %}OS{% endblock pagina_anterior %}
+{% block pagina_atual %}{{ os }}{% endblock pagina_atual %}
+{% block pagina %}{{ os }}{% endblock pagina %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xl-8">
+        <div class="card cart">
+            <div class="card-header">
+                <h3 class="card-title">OS #{{ os.id }}</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-lg-3 col-xl-3">
+                        <label class="form-label">Cliente</label>
+                        <input name="data-entrada" class="form-control mb-4" type="text" value="{{ os.cliente }}" readonly>
+                    </div>
+                    <div class="col-lg-3 col-xl-3">
+                        <label class="form-label">Data</label>
+                        <input name="data-entrada" class="form-control mb-4" type="text" value="{{ os.data|date:'d/m/Y' }}" readonly>
+                    </div>
+                    <div class="col-lg-3 col-xl-3">
+                        <label class="form-label">Conclusão</label>
+                        <input name="data-entrada" class="form-control mb-4" type="text" value="{% if os.conclusao %} {{ os.conclusao|date:'d/m/Y' }} {% endif %}" readonly>
+                    </div>
+                    <div class="col-lg-3 col-xl-3">
+                        <label class="form-label">Pago</label>
+                        <input name="data-entrada" class="form-control mb-4" type="text" value="{{ os.pago }}" readonly>
+                    </div>
+                </div>
+                <hr>
+                
+            </div>
+            <div class="card-footer">
+                <div class="row">
+                    <div class="col-12 text-center"><a href="javascript:void(0)" class="btn btn-primary disabled btn-md"><i class="fa fa-edit"></i> Editar</a></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-12 col-xl-4 col-sm-12 col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Resumo</div>
+            </div>
+            <div class="card-body py-2">
+                <div class="table-responsive">
+                    <table class="table table-borderless text-nowrap mb-0">
+                        <tbody>
+                            <tr>
+                                <td class="text-start">Serviços</td>
+                                <td class="text-end"><span class="fw-bold  ms-auto">R$ <span class="os-valor-total">{{ total_servicos }}</span></span></td>
+                            </tr>
+                            <tr>
+                                <td class="text-start">Itens</td>
+                                <td class="text-end"><span class="fw-bold text-success"> R$ {{ total_saidas }}</span></td>
+                            </tr>
+                            <tr>
+                                <td class="text-start fs-18">Valor Total</td>
+                                <td class="text-end"><span class="ms-2 fw-bold fs-23">R$ <span class="os-valor-total">{{ total_os }}</span></span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="btn-list">
+                    {% if not os.conclusao %}
+                        <a href="#" compra_id="{{ compra.id }}" class="btn btn-success btn-concluir-os float-sm-end">Concluir OS<i class="fa fa-arrow-right ms-1"></i></a>
+                    {% else %}
+                        <button type="button" disabled class="btn btn-danger float-sm-end">OS Finalizada<i class="fa fa-check ms-1"></i></button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-8">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Serviços</h3>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-vcenter">
+                        <thead>
+                            <tr class="border-top">
+                                <th>Serviço</th>
+                                <th>Preço</th>
+                                <th>Quantidade</th>
+                                <th>Subtotal</th>
+                                <th>Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for s in servicos_os %}
+                                <tr>
+                                    <td>{{ s.servico.descricao }}</td>
+                                    <td class="fw-bold">R$ {{ s.servico.valor }}</td>
+                                    <td>
+                                        <div class="handle-counter" id="handleCounter4">
+                                            <button type="button" {% if os.conclusao %} disabled {% endif %} acao="subtrair" servico_os_id="{{ s.id }}" class="counter-minus btn btn-white lh-2 shadow-none btn-remover-quantidade" >
+                                                <i class="fa fa-minus text-muted"></i>
+                                            </button>
+                                            <input type="text" value="{{ s.quantidade }}" class="qty {{ s.id }}-quantidade">
+                                            <button type="button" {% if os.conclusao %} disabled {% endif %} acao="adicionar" servico_os_id="{{ s.id }}" class="counter-plus btn btn-white lh-2 shadow-none btn-adicionar-quantidade">
+                                                <i class="fa fa-plus text-muted"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                    <td>R$ <span class="{{ s.id }}-subtotal">{{ s.obter_valor }}</span></td>
+                                    <td>
+                                        <div class=" d-flex g-2">
+                                            <button 
+                                                {% if os.conclusao %} disabled {% endif %}+
+                                                type="button" 
+                                                class="btn text-danger bg-danger-transparent btn-icon py-1 btn-deletar-item" 
+                                                data-bs-toggle="tooltip" 
+                                                data-bs-original-title="Delete"
+                                                servico_os_id="{{ item.id }}"
+                                                >
+                                                <span class="bi bi-trash fs-16"></span>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="6" class="text-center">
+                                    <button 
+                                        {% if os.conclusao %} disabled {% endif %}+
+                                        type="button"
+                                        class="btn btn-primary"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#modal-adicionar-item"
+                                        >
+                                    <i class="fa fa-plus me-1"></i>Adicionar Serviço</button>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-8">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Saidas Itens</h3>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-vcenter">
+                        <thead>
+                            <tr class="border-top">
+                                <th>ID</th>
+                                <th>Item</th>
+                                <th>Quantidade</th>
+                                <th>Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for saida in saidas %}
+                                <tr>
+                                    <td>{{ saida.id }}</td>
+                                    <td class="fw-bold">{{ saida.item }}</td>
+                                    <td>
+                                        {{ saida.quantidade }}
+                                    </td>
+                                    <td>R$ <span class="{{ saida.id }}-subtotal">{{ saida.obter_valor }}</span></td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
