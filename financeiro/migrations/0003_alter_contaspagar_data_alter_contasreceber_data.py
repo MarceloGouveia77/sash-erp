@@ -7,18 +7,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('financeiro', '0004_alter_contaspagar_data_alter_contasreceber_data'),
+        ('financeiro', '0002_alter_contaspagar_data_alter_contasreceber_data'),
     ]
 
     operations = [
         migrations.AlterField(
             model_name='contaspagar',
             name='data',
-            field=models.DateTimeField(default=datetime.datetime(2022, 3, 30, 17, 9, 32, 933914), verbose_name='Data'),
+            field=models.DateTimeField(default=datetime.datetime(2022, 3, 30, 17, 9, 16, 311819), verbose_name='Data'),
         ),
         migrations.AlterField(
             model_name='contasreceber',
             name='data',
-            field=models.DateTimeField(default=datetime.datetime(2022, 3, 30, 17, 9, 32, 934298), verbose_name='Data'),
+            field=models.DateTimeField(default=datetime.datetime(2022, 3, 30, 17, 9, 16, 312205), verbose_name='Data'),
         ),
     ]

@@ -23,6 +23,7 @@ urlpatterns = [
     path('servicos/', include("servico.urls")),
     path('almox/', include("almox.urls")),
     path('compras/', include("compra.urls")),
-    path('financeiro/', include("financeiro.urls"))
+    path('financeiro/', include("financeiro.urls")),
+    path('api/', include("api.urls"))
     
 ]

@@ -85,8 +85,6 @@ class Funcionario(models.Model):
         return (self.obter_valor_dia() / 8)
     
     def save(self, *args, **kwargs):
-        if not self.id:
-            self.salario = self.funcao.salario_base
         super().save(*args, **kwargs)
         
 class Falta(models.Model):
